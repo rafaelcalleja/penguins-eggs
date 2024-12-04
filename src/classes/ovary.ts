@@ -1922,6 +1922,16 @@ export default class Ovary {
       for (const dir of bindDirs) {
         const dirname = dir.name
         cmds.push('#############################################################')
+        try {
+          fs.lstatSync(`/${dirname}`);
+        } catch (error: any) {
+          if (error.code === 'ENOENT') {
+            continue;
+          }
+          else {
+            throw error;
+          }
+        }
         if (fs.statSync(`/${dirname}`).isDirectory()) {
           cmds.push(`\n# directory: ${dirname}`)
           if (this.mergedAndOverlay(dirname)) {
