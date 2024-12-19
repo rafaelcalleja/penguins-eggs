@@ -1914,7 +1914,7 @@ export default class Ovary {
       for (const dir of bindDirs) {
         const dirname = dir.name
         cmds.push('#############################################################')
-        if (fs.statSync(`/${dirname}`).isDirectory()) {
+        if (fs.existsSync(`/${dirname}`) && fs.statSync(`/${dirname}`).isDirectory()) {
           cmds.push(`\n# directory: ${dirname}`)
           if (this.mergedAndOverlay(dirname)) {
             cmds.push(`\n# ${dirname} has overlay`, `\n# First, umount it from ${this.settings.config.snapshot_dir}`)
@@ -1934,10 +1934,10 @@ export default class Ovary {
             // We can't remove first level nest
             cmds.push(await rexec(`rm -rf ${this.settings.work_dir.merged}/${dirname}`, this.verbose))
           }
-        } else if (fs.statSync(`/${dirname}`).isFile()) {
+        } else if (fs.existsSync(`/${dirname}`) && fs.statSync(`/${dirname}`).isFile()) {
           cmds.push(`\n# ${dirname} = file`)
           cmds.push(await rexec(`rm -f ${this.settings.work_dir.merged}/${dirname}`, this.verbose))
-        } else if (fs.statSync(`/${dirname}`).isSymbolicLink()) {
+        } else if (fs.existsSync(`/${dirname}`) && fs.statSync(`/${dirname}`).isSymbolicLink()) {
           cmds.push(`\n# ${dirname} = symbolicLink`)
           cmds.push(await rexec(`rm -f ${this.settings.work_dir.merged}/${dirname}`, this.verbose))
         }
